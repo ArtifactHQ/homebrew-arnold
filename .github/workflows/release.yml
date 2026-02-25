@@ -1,0 +1,48 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [arnold-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Arnold version (e.g., 1.2.0)"
+        required: true
+      sha256:
+        description: "SHA256 of the release tarball"
+        required: true
+
+jobs:
+  update:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine version and SHA
+        id: meta
+        run: |
+          echo "version=${{ github.event.inputs.version || github.event.client_payload.version }}" >> "$GITHUB_OUTPUT"
+          echo "sha256=${{ github.event.inputs.sha256 || github.event.client_payload.sha256 }}" >> "$GITHUB_OUTPUT"
+
+      - name: Update formula
+        run: |
+          sed -i '' 's|url "https://github.com/ArtifactHQ/arnold_pipeline.git", branch: "master"|url "https://github.com/ArtifactHQ/arnold_pipeline/archive/refs/tags/v'"${{ steps.meta.outputs.version }}"'.tar.gz"|' Formula/arnold.rb
+          sed -i '' 's/version ".*"/version "${{ steps.meta.outputs.version }}"/' Formula/arnold.rb
+          # Add sha256 after the url line if switching to tarball
+          sed -i '' '/^  url /a\
+  sha256 "${{ steps.meta.outputs.sha256 }}"' Formula/arnold.rb
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Test updated formula
+        run: |
+          brew install --build-from-source ./Formula/arnold.rb
+          brew test ./Formula/arnold.rb
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: "Update Arnold to v${{ steps.meta.outputs.version }}"
+          commit-message: "formula: update to v${{ steps.meta.outputs.version }}"
+          branch: "update-${{ steps.meta.outputs.version }}"

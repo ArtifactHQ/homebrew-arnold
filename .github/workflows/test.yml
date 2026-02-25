@@ -1,0 +1,28 @@
+name: Test Formula
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [macos-14, macos-13]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Install formula
+        run: brew install --build-from-source ./Formula/arnold.rb
+
+      - name: Test formula
+        run: brew test ./Formula/arnold.rb
+
+      - name: Audit formula
+        run: brew audit --strict ./Formula/arnold.rb
