@@ -40,7 +40,7 @@ class Arnold < Formula
       export GEM_PATH="#{libexec}/gems"
       export RUBYLIB="#{libexec}/lib"
       export PATH="#{libexec}/gems/bin:$PATH"
-      exec "#{ruby}" "#{libexec}/exe/arnold" "$@"
+      exec "#{ruby}" -rbundler/setup "#{libexec}/exe/arnold" "$@"
     SH
     chmod 0755, bin/"arnold"
   end
