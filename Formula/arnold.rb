@@ -9,14 +9,15 @@ class Arnold < Formula
   depends_on "sqlite3"
 
   def install
+    ruby = Formula["ruby"].opt_bin/"ruby"
+    gem = Formula["ruby"].opt_bin/"gem"
+
     ENV["GEM_HOME"] = libexec/"gems"
     ENV["GEM_PATH"] = libexec/"gems"
 
-    # Install bundler into the isolated gem environment
-    system "gem", "install", "bundler", "--no-document",
+    system gem, "install", "bundler", "--no-document",
            "--install-dir", libexec/"gems"
 
-    # Configure bundler for production-only dependency install
     bundle = libexec/"gems/bin/bundle"
     system bundle, "config", "set", "--local", "path", libexec/"gems"
     system bundle, "config", "set", "--local", "without", "development:test"
@@ -30,16 +31,16 @@ class Arnold < Formula
                         "Gemfile", "Gemfile.lock", "arnold_pipeline.gemspec",
                         "Rakefile", "MIT-LICENSE", ".bundle"]
 
-    # Ensure the CLI entry point is executable
     chmod 0755, libexec/"exe/arnold"
 
-    # Create the bin wrapper that sets up the isolated gem environment
     (bin/"arnold").write <<~SH
       #!/bin/bash
+      export BUNDLE_GEMFILE="#{libexec}/Gemfile"
       export GEM_HOME="#{libexec}/gems"
       export GEM_PATH="#{libexec}/gems"
+      export RUBYLIB="#{libexec}/lib"
       export PATH="#{libexec}/gems/bin:$PATH"
-      exec "#{Formula["ruby"].opt_bin}/ruby" "#{libexec}/exe/arnold" "$@"
+      exec "#{ruby}" -rbundler/setup "#{libexec}/exe/arnold" "$@"
     SH
     chmod 0755, bin/"arnold"
   end
