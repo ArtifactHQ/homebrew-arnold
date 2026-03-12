@@ -1,7 +1,7 @@
 class Arnold < Formula
   desc "AI-orchestrated software development pipeline"
-  homepage "https://github.com/ArtifactHQ/arnold_pipeline"
-  url "https://github.com/ArtifactHQ/arnold_pipeline.git", branch: "master"
+  homepage "https://github.com/ArtifactHQ/Arnold"
+  url "https://github.com/ArtifactHQ/Arnold.git", branch: "master"
   version "0.1.0"
   license "MIT"
 
