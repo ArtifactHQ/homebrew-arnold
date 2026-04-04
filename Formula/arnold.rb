@@ -2,7 +2,7 @@ class Arnold < Formula
   desc "AI-orchestrated software development pipeline"
   homepage "https://github.com/ArtifactHQ/Arnold-Prime"
   url "https://github.com/ArtifactHQ/Arnold-Prime/archive/refs/tags/v0.3.0.tar.gz"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  sha256 "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
   license "MIT"
 
   depends_on "ruby"
