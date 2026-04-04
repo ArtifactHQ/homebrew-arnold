@@ -1,6 +1,6 @@
 # homebrew-arnold
 
-Homebrew tap for [Arnold Pipeline](https://github.com/ArtifactHQ/arnold_pipeline) — AI-orchestrated software development.
+Homebrew tap for [Arnold Pipeline](https://github.com/ArtifactHQ/Arnold-Prime) — AI-orchestrated software development.
 
 ## Installation
 
@@ -58,5 +58,5 @@ brew audit --strict ./Formula/arnold.rb
 
 When a new Arnold Pipeline version is released, either:
 
-1. **Automatic**: The arnold_pipeline repo dispatches a `repository_dispatch` event that triggers the update workflow
-2. **Manual**: Run the "Update Formula" workflow via `workflow_dispatch` with the version and SHA256
+1. **Automatic**: Pushing a `v*` tag to Arnold-Prime triggers the `bump-homebrew.yml` workflow which updates this formula
+2. **Manual**: Update `Formula/arnold.rb` with the new tarball URL and SHA256
